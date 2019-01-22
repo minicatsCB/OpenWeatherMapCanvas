@@ -22,12 +22,12 @@ function requestForecastWeather() {
         });
 }
 
-function createChart(forecastTemperatureData, forecastHumidityData) {
+function createChart(nextFiveDaysName, forecastTemperatureData, forecastHumidityData) {
     let ctx = document.getElementById("myChart").getContext("2d");
     let myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            labels: nextFiveDaysName,
             datasets: [{
                 label: 'Temperature',
                 data: forecastTemperatureData,
@@ -56,10 +56,20 @@ function createChart(forecastTemperatureData, forecastHumidityData) {
 }
 
 function displayWeather(data) {
+    let nextFiveDaysName = [data.list[0].dt, data.list[8].dt, data.list[16].dt, data.list[24].dt,data.list[32].dt].map(getWeekDayName);
     let forecastTemperatureData = [data.list[0].main.temp, data.list[8].main.temp, data.list[16].main.temp, data.list[24].main.temp, data.list[32].main.temp];
     let forecastHumidityData = [data.list[0].main.humidity, data.list[8].main.humidity, data.list[16].main.humidity, data.list[24].main.humidity, data.list[32].main.humidity];
 
-    createChart(forecastTemperatureData, forecastHumidityData);
+    createChart(nextFiveDaysName, forecastTemperatureData, forecastHumidityData);
+}
+
+function getWeekDayName(timestamp) {
+    var date = new Date(timestamp * 1000);
+    var options = {
+        weekday: 'long'
+    };
+
+    return date.toLocaleString("en-EN", options);
 }
 
 requestForecastWeather();
